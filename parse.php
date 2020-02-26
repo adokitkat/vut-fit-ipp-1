@@ -98,8 +98,7 @@
         exit(22);
     }
 
-    $re_string = '/^(?!.*(\\\\\d\d\D|\\\\\d\d$|\\\\\d\D|\\\\\d$|\\\\\D|\\\\$|\s)).*$/m';
-    $matches;
+    $matches; $re_string = '/^(?!.*(\\\\\d\d\D|\\\\\d\d$|\\\\\d\D|\\\\\d$|\\\\\D|\\\\$|\s)).*$/m';
     
     for ($i = 1; $i <= $op['arg_count']; $i++) {
       if ( ($op["arg$i".'_type'] === 'int'    and !(preg_match('/^\d+$/m', $op["arg$i"], $matches, PREG_OFFSET_CAPTURE, 0)) )
@@ -131,9 +130,6 @@
     $op['arg3']   = ''; $op['arg3_type'] = '';
 
     if ($line_stripped = strstr($line, '#', true)) $line = $line_stripped;
-    $line = str_replace('<', '&lt;', $line);
-    $line = str_replace('>', '&gt;', $line);
-    $line = str_replace('&', '&amp;', $line);
     $words = preg_split('/\s+/', $line);
     $words = array_filter(array_map('trim', $words));
     
@@ -165,6 +161,7 @@
       default:
         exit(23);
     }
+    
     check_instruction($op);
   }
   
@@ -226,7 +223,7 @@
   }
 
   // Empty STDIN/file
-  if (feof(STDIN)) exit(0);
+  if (feof(STDIN)) exit(11); // ?
 
   // Load content from STDIN
   $content = [];
@@ -254,4 +251,3 @@
 
   exit(0);
 ?>
-
