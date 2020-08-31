@@ -9,6 +9,7 @@
   ];
 
   #Functions
+  ## Lexical + syntactic analysis
   function check_instruction(&$op) {
     switch (strtoupper($op['opcode'])) {    
       // no parameter
@@ -118,6 +119,7 @@
     }
   }
 
+  ## Saves argument to $op 
   function save_arg(&$op, $words, $i) {
     if (($type = strstr($words[$i], '@', true)) === 'GF' or $type === 'TF' or $type === 'LF') {
       $op["arg$i"]         = $words[$i];
@@ -134,6 +136,7 @@
     }
   }
 
+  ## Splits string into parts and saves them into $op -> calls save_arg()
   function op(&$op, $line) {
     $op['opcode'] = '';
     $op['arg1']   = ''; $op['arg1_type'] = '';
@@ -176,12 +179,14 @@
     check_instruction($op);
   }
   
+  ## Outputs integers, each time increasing by 1, starts on 1
   function order() {
     static $order = 0;
     $order++;
     return $order;
   }
 
+  ## Prints arguments into XML
   function print_arg($xw, $op, $i) {
     xmlwriter_start_element($xw, "arg$i");
     xmlwriter_start_attribute($xw, 'type');
@@ -192,6 +197,7 @@
     xmlwriter_end_element($xw);
   }
 
+  ## Prints instruction into XML
   function print_i($xw, $op) {
     xmlwriter_start_element($xw, 'instruction');
     xmlwriter_start_attribute($xw, 'order');
@@ -236,10 +242,10 @@
       exit(21);
   }
 
-  // Empty STDIN/file
-  if (feof(STDIN)) exit(21); // ?
+  // Is STDIN/file empty? = Missing header
+  if (feof(STDIN)) exit(21);
 
-  // Load content from STDIN
+  // Loads content from STDIN
   $content = [];
   while (!feof(STDIN)) {
     $line = trim(fgets(STDIN));
@@ -249,7 +255,7 @@
     $content[] = $op;
   }
 
-  // Print XML
+  // Prints XML
   $xw = xmlwriter_open_memory();
   xmlwriter_set_indent($xw, 1);
   $res = xmlwriter_set_indent_string($xw, '  ');
